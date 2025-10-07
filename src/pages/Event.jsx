@@ -1,93 +1,102 @@
-import React, { useState } from 'react'
+
+
+import React, { useState } from 'react';
 
 function Event() {
-  const [users, setUsers] = useState({
-    Username: '',
-    Email: '',
-    AcceptTerms: false,
-    Gender: '',
-    Country: '',
-    Range: 50
-  })
-  const [show, setShow] = useState(false)
+  const [users, Setusers] = useState({});
+  const [show, setShow] = useState(false);
 
   function input(e) {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
 
-    setUsers(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
+    if (name === 'Skills') {
+      const updatedSkills = checked
+        ? [...(users.Skills || []), value]
+        : (users.Skills || []).filter(skill => skill !== value);
+
+      Setusers({ ...users, Skills: updatedSkills });
+    } else if (type === 'checkbox') {
+      Setusers({ ...users, [name]: checked });
+    } else {
+      Setusers({ ...users, [name]: value });
+    }
   }
 
   function showData(e) {
-    e.preventDefault()
-    setShow(true)
+    e.preventDefault();
+    setShow(true);
   }
 
   return (
-    <>
-      <form className='col-lg-5 mx-auto my-5 p-5 shadow' onSubmit={showData}>
+    <div className="container my-5">
+      <form className="col-md-6 mx-auto card p-4 shadow" onSubmit={showData}>
+        <h2 className="text-center mb-4">User Form</h2>
+
       
-        <div className='mt-4'>
+        <div className="mb-3">
+          <label className="form-label">Name</label>
           <input
             type="text"
-            name='Username'
-            placeholder='Enter your name'
-            className='form-control shadow border-0'
+            name="Username"
+            placeholder="Enter your name"
+            className="form-control"
             onChange={input}
           />
-          <p>{users.Username}</p>
-        </div>
-
-   
-        <div className='mt-4'>
-          <input
-            type="email"
-            name='Email'
-            placeholder='Enter your email'
-            className='form-control shadow border-0'
-            onChange={input}
-          />
-          <p>{users.Email}</p>
         </div>
 
      
-        <div className='mt-4 form-check'>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
           <input
-            type="checkbox"
-            name='AcceptTerms'
-            className='form-check-input'
+            type="email"
+            name="Email"
+            placeholder="Enter your email"
+            className="form-control"
             onChange={input}
           />
-          <label className='form-check-label'>Accept Terms and Conditions</label>
-          <p>{users.AcceptTerms ? 'Accepted' : 'Not Accepted'}</p>
         </div>
 
-       
-        <div className='mt-4'>
-          <label className='form-label'>Gender</label><br />
+  
+        <div className="form-check mb-3">
           <input
-            type="radio"
-            name="Gender"
-            value="Male"
+            type="checkbox"
+            name="AcceptTerms"
+            className="form-check-input"
             onChange={input}
-          /> Male&nbsp;
-          <input
-            type="radio"
-            name="Gender"
-            value="Female"
-            onChange={input}
-          /> Female
-          <p>{users.Gender}</p>
+          />
+          <label className="form-check-label">Accept Terms and Conditions</label>
         </div>
 
-       
-        <div className='mt-4'>
-          <label className='form-label'>Country</label>
+        <div className="mb-3">
+          <label className="form-label d-block">Gender:</label>
+          <div className="form-check form-check-inline">
+            <input
+              type="radio"
+              name="Gender"
+              value="Male"
+              className="form-check-input"
+              onChange={input}
+            />
+            <label className="form-check-label">Male</label>
+          </div>
+          <div className="form-check form-check-inline">
+            <input
+              type="radio"
+              name="Gender"
+              value="Female"
+              className="form-check-input"
+              onChange={input}
+            />
+            <label className="form-check-label">Female</label>
+          </div>
+        </div>
+
+      
+        <div className="mb-3">
+          <label className="form-label">Country</label>
           <select
             name="Country"
-            className='form-control'
+            className="form-select"
             onChange={input}
             defaultValue=""
           >
@@ -96,47 +105,65 @@ function Event() {
             <option value="USA">USA</option>
             <option value="Germany">Germany</option>
           </select>
-          <p>{users.Country}</p>
         </div>
 
-        
-        <div className='mt-4'>
-          <label className='form-label'>Range: {users.Range}</label>
+      
+        <div className="mb-3">
+          <label className="form-label d-block">Select Skills:</label>
+          {['HTML', 'CSS', 'JavaScript', 'React'].map(skill => (
+            <div key={skill} className="form-check form-check-inline">
+              <input
+                type="checkbox"
+                name="Skills"
+                value={skill}
+                className="form-check-input"
+                onChange={input}
+                checked={(users.Skills || []).includes(skill)}
+              />
+              <label className="form-check-label">{skill}</label>
+            </div>
+          ))}
+        </div>
+
+       
+        <div className="mb-4">
+          <label className="form-label">Range: {users.Range || 50}</label>
           <input
             type="range"
-            name='Range'
+            name="Range"
             min="0"
             max="100"
-            className='form-range'
+            className="form-range"
             onChange={input}
-            value={users.Range}
+            value={users.Range || 50}
           />
         </div>
 
-      
-        <div className='mt-4'>
-          <button className='btn btn-info shadow'>Submit</button>
+       
+        <div className="d-grid">
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </div>
 
-      
-        <div className='mt-4'>
-          {
-            show && (
-              <div>
-                <h5>Submitted Data:</h5>
-                <p><strong>Name:</strong> {users.Username}</p>
-                <p><strong>Email:</strong> {users.Email}</p>
-                <p><strong>Terms Accepted:</strong> {users.AcceptTerms ? 'Yes' : 'No'}</p>
-                <p><strong>Gender:</strong> {users.Gender}</p>
-                <p><strong>Country:</strong> {users.Country}</p>
-                <p><strong>Range Value:</strong> {users.Range}</p>
-              </div>
-            )
-          }
-        </div>
+     
+        {show && (
+          <div className="mt-4 border-top pt-3">
+            <h4>Submitted Data</h4>
+            <ul className="list-group">
+              <li className="list-group-item"><strong>Name:</strong> {users.Username || '-'}</li>
+              <li className="list-group-item"><strong>Email:</strong> {users.Email || '-'}</li>
+              <li className="list-group-item"><strong>Accepted Terms:</strong> {users.AcceptTerms ? 'Yes' : 'No'}</li>
+              <li className="list-group-item"><strong>Gender:</strong> {users.Gender || '-'}</li>
+              <li className="list-group-item"><strong>Country:</strong> {users.Country || '-'}</li>
+              <li className="list-group-item"><strong>Skills:</strong> {(users.Skills || []).join(', ') || 'None'}</li>
+              <li className="list-group-item"><strong>Range:</strong> {users.Range || 50}</li>
+            </ul>
+          </div>
+        )}
       </form>
-    </>
-  )
+    </div>
+  );
 }
 
-export default Event
+export default Event;
